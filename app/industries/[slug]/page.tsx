@@ -1,0 +1,408 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { industries, industriesSlugs, pricingPlans, getSingularName } from "@/lib/data";
+import { generateServiceSchema, generateBreadcrumbSchema, generateWebPageSchema, generateAggregateRatingSchema, generateFAQSchema, generateProfessionalServiceSchema } from "@/lib/schemas";
+
+const BASE_URL = "https://smallbusinessmarketingprofessional.com";
+const WA_LINK =
+  "https://wa.me/923474825228?text=Hi!%20I%20found%20your%20website%20and%20I%27m%20interested%20in%20growing%20my%20business%20online.%20Can%20you%20help%3F";
+
+const plans = pricingPlans;
+
+export async function generateStaticParams() {
+  return industriesSlugs.map((slug) => ({ slug }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const industry = industries[slug];
+  if (!industry) return {};
+
+  return {
+    title: `Local SEO & Digital Marketing for ${industry.name} | UK Expert`,
+    description: `Expert local digital marketing for UK ${industry.plural}. Get more customers searching '${industry.searchTerm}'. Page 1 results in 30–90 days. Free audit.`,
+    keywords: [
+      `${industry.name.toLowerCase()} SEO`,
+      `${industry.name.toLowerCase()} digital marketing`,
+      `${industry.name.toLowerCase()} local marketing`,
+      industry.searchTerm,
+      `UK ${industry.plural.toLowerCase()}`,
+    ],
+    alternates: {
+      canonical: `${BASE_URL}/industries/${slug}`,
+    },
+    openGraph: {
+      title: `Local SEO & Digital Marketing for ${industry.name} | UK Expert`,
+      description: `Expert local digital marketing for UK ${industry.plural}. Get more customers searching '${industry.searchTerm}'.`,
+      url: `${BASE_URL}/industries/${slug}`,
+      type: "website",
+    },
+  };
+}
+
+export default async function IndustryPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const industry = industries[slug];
+  if (!industry) notFound();
+
+  const singularName = getSingularName(industry.name);
+
+  const pageUrl = `${BASE_URL}/industries/${slug}`;
+  const serviceTitle = `Local SEO & Digital Marketing for ${industry.name}`;
+  const serviceDescription = `Expert local digital marketing for UK ${industry.plural}. Get more customers searching '${industry.searchTerm}'. Page 1 results in 30–90 days.`;
+
+  const serviceSchema = generateServiceSchema(serviceTitle, serviceDescription, "£199");
+  const professionalServiceSchema = generateProfessionalServiceSchema(
+    serviceTitle,
+    serviceDescription,
+    pageUrl,
+    "From £199/month",
+    `${industry.name} Digital Marketing`
+  );
+  const breadcrumbSchema = generateBreadcrumbSchema([
+    { name: "Home", url: BASE_URL },
+    { name: "Industries", url: `${BASE_URL}/industries` },
+    { name: industry.name },
+  ]);
+  const webPageSchema = generateWebPageSchema(serviceTitle, serviceDescription, pageUrl);
+  const ratingSchema = generateAggregateRatingSchema(serviceTitle, 4.9, 150);
+  const faqSchema = generateFAQSchema([
+    {
+      question: `How can local SEO help my ${singularName.toLowerCase()} business?`,
+      answer: `Local SEO gets your ${singularName.toLowerCase()} business ranking at the top of Google when local customers search '${industry.searchTerm}'. More visibility means more calls, bookings, and revenue — typically within 30–90 days.`,
+    },
+    {
+      question: `How long does it take to rank my ${singularName.toLowerCase()} business on Google?`,
+      answer: `Most ${industry.plural} see ranking movement within 30–60 days. Strong page-1 positions typically take 90–120 days depending on local competition.`,
+    },
+    {
+      question: `How much does digital marketing for ${industry.plural} cost?`,
+      answer: `Our plans start from £199/month (Starter) through to £599/month (Pro). Most ${industry.plural} invest £349/month for full local SEO and reputation management.`,
+    },
+    {
+      question: `Do you work with small and independent ${industry.plural}?`,
+      answer: `Yes. We specialise in helping independent ${industry.plural} compete with larger businesses. Local SEO levels the playing field and we've done it for 150+ UK businesses.`,
+    },
+    {
+      question: `Can you rank my ${singularName.toLowerCase()} on Google Maps?`,
+      answer: `Absolutely. Google Maps (3-pack) rankings are our core strength. We optimise your Google Business Profile, build local citations, and manage reviews to push you into the top 3 positions.`,
+    },
+  ]);
+
+  return (
+    <div style={{ backgroundColor: "#080D1A" }}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify([serviceSchema, professionalServiceSchema, breadcrumbSchema, webPageSchema, ratingSchema, faqSchema]) }}
+      />
+      {/* Hero */}
+      <section
+        style={{
+          background: "radial-gradient(ellipse 80% 60% at 50% -10%, rgba(79,142,247,0.18) 0%, transparent 70%), #080D1A",
+          borderBottom: "1px solid rgba(255,255,255,0.07)",
+        }}
+        className="py-16 md:py-24"
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="text-6xl mb-5">{industry.icon}</div>
+          <h1
+            className="gradient-text text-4xl sm:text-5xl lg:text-6xl font-extrabold mb-5"
+            style={{ fontFamily: "var(--font-display, sans-serif)" }}
+          >
+            Local Digital Marketing for UK {industry.name}
+          </h1>
+          <p className="text-lg sm:text-xl max-w-2xl mx-auto mb-10" style={{ color: "#8B9CB8" }}>
+            I help {industry.plural} across the UK rank #1 on Google, get more calls, and grow revenue. Deep industry knowledge means faster, better results.
+          </p>
+          <div className="flex flex-wrap justify-center gap-4">
+            <Link
+              href="/free-audit"
+              className="inline-flex items-center px-8 py-4 rounded-xl font-semibold text-white text-base transition-all hover:-translate-y-0.5 hover:shadow-xl"
+              style={{ backgroundColor: "#4F8EF7" }}
+            >
+              Get Free Audit →
+            </Link>
+            <a
+              href={WA_LINK}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold text-white text-base transition-all hover:-translate-y-0.5 hover:shadow-xl"
+              style={{ backgroundColor: "#22C55E" }}
+            >
+              💬 WhatsApp Me
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* What businesses need online */}
+      <section className="py-16 md:py-24" style={{ backgroundColor: "#0D1627" }}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-2xl mx-auto mb-12">
+            <h2
+              className="text-3xl sm:text-4xl font-extrabold mb-4"
+              style={{ fontFamily: "var(--font-display, sans-serif)", color: "#E2E8F0" }}
+            >
+              What {industry.name} Businesses Need Online
+            </h2>
+            <p style={{ color: "#8B9CB8" }}>
+              I&apos;ve worked with {industry.plural} across the UK — I know exactly what it takes to win online.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[
+              {
+                icon: "🔍",
+                title: "Page 1 Rankings",
+                desc: `When someone searches '${industry.searchTerm}', your business needs to appear at the top. I know exactly what Google wants for ${singularName.toLowerCase()} businesses.`,
+              },
+              {
+                icon: "📞",
+                title: "More Local Calls",
+                desc: `Every day you're not on page 1, customers are calling your competitors. I change that — typically within 30–90 days.`,
+              },
+              {
+                icon: "⭐",
+                title: "Trust & Reviews",
+                desc: `Customers choosing a ${singularName.toLowerCase()} need to trust you first. I build your online reputation to make that decision easy.`,
+              },
+            ].map((card) => (
+              <div
+                key={card.title}
+                className="rounded-2xl p-8 transition-all hover:-translate-y-1 card-hover-blue"
+                style={{
+                  backgroundColor: "#111E33",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                  boxShadow: "0 4px 24px rgba(0,0,0,0.4)",
+                }}
+              >
+                <div className="text-4xl mb-4">{card.icon}</div>
+                <h3 className="text-lg font-bold mb-3" style={{ color: "#E2E8F0" }}>
+                  {card.title}
+                </h3>
+                <p className="text-sm leading-relaxed" style={{ color: "#8B9CB8" }}>
+                  {card.desc}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Deep industry knowledge */}
+      <section style={{ backgroundColor: "#050A14" }} className="py-16 md:py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <h2
+                className="text-3xl sm:text-4xl font-extrabold mb-5"
+                style={{ fontFamily: "var(--font-display, sans-serif)", color: "#E2E8F0" }}
+              >
+                Deep {industry.name} Knowledge = Better Results
+              </h2>
+              <p className="text-base mb-8 leading-relaxed" style={{ color: "#8B9CB8" }}>
+                I&apos;ve worked with {industry.plural} across the UK for 5 years of focused expertise. I understand your customer&apos;s search behaviour, your local competition, and exactly what it takes to win the top Google ranking in your area.
+              </p>
+              <ul className="space-y-4">
+                {[
+                  `I know the exact search terms ${industry.plural} need to rank for`,
+                  `I understand the seasonal demand patterns in your industry`,
+                  `I know what your competitors are doing — and how to beat them`,
+                  `I've refined strategies specifically for ${industry.plural} over 5 years of focused results`,
+                ].map((point) => (
+                  <li key={point} className="flex items-start gap-3">
+                    <span
+                      className="flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-sm mt-0.5"
+                      style={{ backgroundColor: "rgba(34,197,94,0.15)", color: "#22C55E" }}
+                    >
+                      ✓
+                    </span>
+                    <span className="text-sm" style={{ color: "#8B9CB8" }}>
+                      {point}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div
+              className="rounded-2xl p-8"
+              style={{ backgroundColor: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.10)" }}
+            >
+              <div className="text-center mb-6">
+                <div className="text-5xl mb-3">{industry.icon}</div>
+                <div
+                  className="text-4xl font-extrabold mb-1"
+                  style={{ fontFamily: "var(--font-display, sans-serif)", color: "#4F8EF7", textShadow: "0 0 30px rgba(79,142,247,0.5)" }}
+                >
+                  5 Years
+                </div>
+                <div style={{ color: "#8B9CB8" }}>Marketing {industry.plural} across the UK</div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                {[
+                  { value: "150+", label: "Businesses ranked" },
+                  { value: "Page 1", label: "In 30–90 days" },
+                  { value: "£100k+", label: "Revenue generated" },
+                  { value: "4.9★", label: "Client satisfaction" },
+                ].map((stat) => (
+                  <div
+                    key={stat.label}
+                    className="text-center p-4 rounded-xl"
+                    style={{ backgroundColor: "rgba(255,255,255,0.05)" }}
+                  >
+                    <div
+                      className="text-2xl font-extrabold mb-1"
+                      style={{ fontFamily: "var(--font-display, sans-serif)", color: "#4F8EF7" }}
+                    >
+                      {stat.value}
+                    </div>
+                    <div className="text-xs" style={{ color: "#8B9CB8" }}>{stat.label}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing preview */}
+      <section className="py-16 md:py-24" style={{ backgroundColor: "#080D1A" }}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2
+              className="text-3xl sm:text-4xl font-extrabold mb-4"
+              style={{ fontFamily: "var(--font-display, sans-serif)", color: "#E2E8F0" }}
+            >
+              Simple, Transparent Pricing
+            </h2>
+            <p style={{ color: "#8B9CB8" }}>No contracts. No surprises. Cancel anytime.</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            {plans.map((plan) => (
+              <div
+                key={plan.name}
+                className="rounded-2xl p-7 flex flex-col transition-all hover:-translate-y-1 card-hover-blue"
+                style={{
+                  backgroundColor: "#111E33",
+                  border: plan.badge
+                    ? `2px solid rgba(34,197,94,0.40)`
+                    : "1px solid rgba(255,255,255,0.08)",
+                  boxShadow: plan.badge
+                    ? "0 0 40px rgba(34,197,94,0.08)"
+                    : "0 4px 24px rgba(0,0,0,0.4)",
+                }}
+              >
+                {plan.badge && (
+                  <div
+                    className="text-xs font-semibold px-3 py-1 rounded-full text-center mb-4 w-fit mx-auto"
+                    style={{ backgroundColor: "rgba(34,197,94,0.12)", color: "#22C55E", border: "1px solid rgba(34,197,94,0.30)" }}
+                  >
+                    {plan.badge}
+                  </div>
+                )}
+                <div className="text-lg font-bold mb-2" style={{ color: "#E2E8F0" }}>
+                  {plan.name}
+                </div>
+                <div className="flex items-baseline gap-1 mb-5">
+                  <span
+                    className="text-3xl font-extrabold"
+                    style={{ fontFamily: "var(--font-display, sans-serif)", color: plan.color }}
+                  >
+                    {plan.price}
+                  </span>
+                  <span className="text-sm" style={{ color: "#8B9CB8" }}>{plan.period}</span>
+                </div>
+                <ul className="space-y-2 mb-6 flex-1">
+                  {plan.features.map((f) => (
+                    <li key={f} className="flex items-start gap-2 text-sm" style={{ color: "#8B9CB8" }}>
+                      <span style={{ color: "#22C55E" }}>✓</span>
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+                <Link
+                  href="/pricing"
+                  className="w-full flex justify-center py-3 rounded-xl font-semibold text-sm transition-all hover:-translate-y-0.5"
+                  style={{
+                    backgroundColor: plan.badge ? "rgba(34,197,94,0.15)" : "rgba(79,142,247,0.10)",
+                    color: plan.badge ? "#22C55E" : "#4F8EF7",
+                    border: plan.badge ? "1px solid rgba(34,197,94,0.30)" : "1px solid rgba(79,142,247,0.20)",
+                  }}
+                >
+                  View Full Details
+                </Link>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Digital Marketing Overview Link */}
+      <section className="py-12 md:py-16" style={{ backgroundColor: "#0D1627" }}>
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <p className="text-sm mb-3" style={{ color: "#8B9CB8" }}>
+            Interested in a comprehensive digital marketing strategy?
+          </p>
+          <Link
+            href="/digital-marketing-for-small-business"
+            className="inline-block text-lg font-semibold transition-colors hover:underline"
+            style={{ color: "#4F8EF7" }}
+          >
+            View Our Complete Digital Marketing Approach →
+          </Link>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section
+        className="py-16 md:py-24"
+        style={{
+          background: "radial-gradient(ellipse 70% 80% at 50% 50%, rgba(79,142,247,0.10) 0%, #080D1A 70%)",
+          borderTop: "1px solid rgba(79,142,247,0.20)",
+        }}
+      >
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2
+            className="gradient-text text-3xl sm:text-4xl font-extrabold mb-5"
+            style={{ fontFamily: "var(--font-display, sans-serif)" }}
+          >
+            Ready to grow your {singularName.toLowerCase()} business?
+          </h2>
+          <p className="text-lg mb-10 max-w-xl mx-auto" style={{ color: "#8B9CB8" }}>
+            Join hundreds of UK {industry.plural} growing with expert local digital marketing.
+          </p>
+          <div className="flex flex-wrap justify-center gap-4">
+            <Link
+              href="/free-audit"
+              className="inline-flex items-center px-8 py-4 rounded-xl font-semibold text-white text-base transition-all hover:-translate-y-0.5 hover:shadow-xl"
+              style={{ backgroundColor: "#4F8EF7" }}
+            >
+              Get My FREE Audit →
+            </Link>
+            <a
+              href={WA_LINK}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold text-white text-base transition-all hover:-translate-y-0.5 hover:shadow-xl"
+              style={{ backgroundColor: "#22C55E" }}
+            >
+              💬 WhatsApp Me Now
+            </a>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}

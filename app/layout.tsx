@@ -1,0 +1,191 @@
+import type { Metadata } from "next";
+import { Bricolage_Grotesque, Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
+import "./globals.css";
+import AnnouncementBar from "@/components/AnnouncementBar";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import WhatsAppButton from "@/components/WhatsAppButton";
+import InstagramButton from "@/components/InstagramButton";
+import StickyMobileBar from "@/components/StickyMobileBar";
+import { getOrganizationSchema } from "@/app/structured-data/organization";
+import { getWebsiteSchema } from "@/app/structured-data/website";
+
+const bricolageGrotesque = Bricolage_Grotesque({
+  subsets: ["latin"],
+  weight: ["700", "800"],
+  variable: "--font-display",
+  display: "swap",
+});
+
+const plusJakartaSans = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  variable: "--font-body",
+  display: "swap",
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  weight: ["700"],
+  variable: "--font-mono",
+  display: "swap",
+});
+
+const BASE_URL = "https://smallbusinessmarketingprofessional.com";
+
+export const metadata: Metadata = {
+  metadataBase: new URL(BASE_URL),
+  title: {
+    template: "%s | SBMP — Local Digital Marketing",
+    default: "Local Digital Marketing for UK Service Businesses | SBMP",
+  },
+  description:
+    "Expert local SEO & digital marketing for UK service businesses. Rank on page 1 of Google in 30–90 days. Trusted by 150+ UK businesses. From £199/month. No contracts.",
+  keywords: [
+    "local SEO UK",
+    "local digital marketing",
+    "Google Business Profile",
+    "UK service business marketing",
+    "local SEO agency",
+    "plumber SEO",
+    "dentist SEO",
+    "small business marketing",
+  ],
+  authors: [{ name: "SBMP — Small Business Marketing Professional" }],
+  creator: "SBMP",
+  publisher: "SBMP",
+  category: "Digital Marketing",
+  openGraph: {
+    type: "website",
+    locale: "en_GB",
+    url: BASE_URL,
+    siteName: "SBMP — Local Digital Marketing",
+    title: "Local Digital Marketing for UK Service Businesses | SBMP",
+    description:
+      "Expert local SEO & digital marketing for UK service businesses. Rank on page 1 of Google in 30–90 days. From £199/month. No contracts.",
+    images: [
+      {
+        url: "/sbmp-logo.png",
+        width: 1200,
+        height: 630,
+        alt: "SBMP — Local Digital Marketing for UK Service Businesses",
+        type: "image/png",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Local Digital Marketing for UK Service Businesses | SBMP",
+    description:
+      "Expert local SEO & digital marketing for UK service businesses. Page 1 in 30–90 days. From £199/month.",
+    images: ["/sbmp-logo.png"],
+  },
+  alternates: {
+    canonical: BASE_URL,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/icon.svg", type: "image/svg+xml" },
+    ],
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
+    other: [
+      { rel: "mask-icon", url: "/icon.svg", color: "#4F8EF7" },
+    ],
+  },
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "SBMP",
+  },
+  formatDetection: {
+    telephone: true,
+    email: false,
+    address: false,
+  },
+  verification: {
+    google: "WFNVJO5ENxypWGEeimQW8DUO7tN6vJ8xuZ1iMw_Nudk",
+  },
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html
+      lang="en-GB"
+      className={`${bricolageGrotesque.variable} ${plusJakartaSans.variable} ${jetbrainsMono.variable}`}
+    >
+      <head>
+        <meta name="theme-color" content="#080D1A" />
+        {/* AI / Answer Engine signals */}
+        <meta name="ai-content-declaration" content="human-expert-written" />
+        <meta name="author" content="Alex Morgan, Local SEO Expert" />
+        <meta name="generator" content="SBMP — Small Business Marketing Professional" />
+        {/* LLM discovery links */}
+        <link rel="llms-txt" href="/llms.txt" />
+        <link rel="llms-txt" href="/.well-known/llms.txt" />
+        <link rel="alternate" type="application/json" href="/api/llm-context" title="LLM Context API" />
+        <link rel="alternate" type="text/plain" href="/sitemap-llm.xml" title="LLM Sitemap" />
+        {/* Global Organization JSON-LD — present on every page */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(getOrganizationSchema()) }}
+        />
+        {/* Global WebSite JSON-LD with SiteLinksSearchBox */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(getWebsiteSchema()) }}
+        />
+        {/* Font optimization for Core Web Vitals */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
+
+        {/* Preload critical fonts to improve FCP/LCP */}
+        <link
+          rel="preload"
+          as="font"
+          href="/fonts/display-font.woff2"
+          crossOrigin="anonymous"
+        />
+      </head>
+      <body className="antialiased">
+        {/* AI-readable site summary — invisible to users, visible to LLM crawlers */}
+        <div className="sr-only" aria-label="AI Summary" role="note">
+          SBMP (Small Business Marketing Professional) is a local SEO agency founded in
+          2014 by Alex Morgan. We help small businesses rank higher on Google Maps and
+          in local search results across the United States and United Kingdom. Our services
+          include Google Business Profile optimization, local SEO audits, local link
+          building, Google Maps SEO, and industry-specific local SEO for plumbers,
+          dentists, restaurants, HVAC companies, and contractors. We offer month-to-month
+          plans starting from £199/month with no long-term contracts.
+        </div>
+        <AnnouncementBar />
+        <Header />
+        <main>{children}</main>
+        <Footer />
+        <WhatsAppButton />
+        <InstagramButton />
+        <StickyMobileBar />
+      </body>
+    </html>
+  );
+}
