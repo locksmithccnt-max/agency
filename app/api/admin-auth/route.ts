@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
-const ADMIN_PASSWORD = "agency2026.com";
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? "agency2026.com";
 const COOKIE_NAME = "admin_session";
 const COOKIE_VALUE = "authenticated_agency";
 
