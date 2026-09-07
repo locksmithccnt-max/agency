@@ -26,11 +26,11 @@ function getAdminClient(): SupabaseClient {
 }
 
 export const supabase = new Proxy({} as SupabaseClient, {
-  get(_t, p) { return (getClient() as Record<string, unknown>)[p as string]; },
+  get(_t, p) { return (getClient() as unknown as Record<string, unknown>)[p as string]; },
 });
 
 export const supabaseAdmin = new Proxy({} as SupabaseClient, {
-  get(_t, p) { return (getAdminClient() as Record<string, unknown>)[p as string]; },
+  get(_t, p) { return (getAdminClient() as unknown as Record<string, unknown>)[p as string]; },
 });
 
 export type Booking = {
