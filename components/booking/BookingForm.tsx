@@ -11,13 +11,14 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Toast, useToast } from "@/components/ui/toast";
 import { TimeSlotPicker } from "./TimeSlotPicker";
-import type { Service } from "@prisma/client";
 import type { TimeSlot } from "@/types/booking";
 import { format } from "date-fns";
 import { Loader2, CheckCircle2 } from "lucide-react";
 
+interface LegacyService { id: string; name: string; price: number; }
+
 interface BookingFormProps {
-  services: Service[];
+  services: LegacyService[];
 }
 
 export default function BookingForm({ services }: BookingFormProps) {
