@@ -21,7 +21,7 @@ export default function AdminLogin() {
     });
 
     if (res.ok) {
-      router.refresh();
+      router.push("/admin");
     } else {
       setError("Incorrect password. Try again.");
     }
